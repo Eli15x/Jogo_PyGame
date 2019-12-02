@@ -38,8 +38,19 @@ my_direction = LEFT  # definindo direcao que a cobra irá começar a andar.
 
 clock = pygame.time.Clock() #instanciando o clock que será oque definirá o tempo de andamento da cobrinha
 
+font = pygame.font.Font('freesansbold.ttf', 18) #definindo a fonte da escrita do meu pyGame.
+score = 0 #definindo variável que guardará a pontuação de quantas maças foram comidas.
+
+
 while True :
-    clock.tick(10)
+
+    if score < 5:
+        clock.tick(10)  #tempo para ficar recarregando a tela
+
+    if score >= 5:
+        clock.tick(20)  #tempo para ficar recarregando a tela
+
+
     for event in pygame.event.get():
         if event.type == QUIT:  #se o tipo de evento for igual a quit(se a pessoa clicar em fechar)
             pygame.quit()       #terminar o pygame
@@ -57,6 +68,8 @@ while True :
     if collision(snake[0], apple_pos): # conferindo se houve colisão(cobra e maça)
         apple_pos = on_grid_random()   # se encontrou,vamos definir uma nova posição para a maça
         snake.append((0,0))            # cobra irá crescer
+        #if(score == 20)
+        score = score + 1              # aumento meu score
 
     # conferindo se a cobra colidiu com a parede
     if snake[0][0] == 600 or snake[0][1] == 600 or snake[0][0] < 0 or snake[0][1] < 0:
@@ -83,6 +96,27 @@ while True :
 
     screen.fill((0,0,0))   #limpa a tela
     screen.blit(apple, apple_pos)  #printa,desenha a maça na tela
+
+    #desenhando na tela as posicoes onde a cobra poderá andar.
+    #desenhando na tela todas as coordenadas em quadrados.
+
+    for x in range(0, 600, 10): # desenhando as linhas horizontais
+        pygame.draw.line(screen, (40, 40, 40), (x, 0), (x, 600))
+    for y in range(0, 600, 10): # desenhando as linhas verticais
+        pygame.draw.line(screen, (40, 40, 40), (0, y), (600, y))
+
+    if score < 5:
+        score_font = font.render('Fase 1,Score: %s' % (score), True, (255, 255, 255))  #definindo oque será escrito e sua cor,no caso a cor branca
+        score_rect = score_font.get_rect() 
+        score_rect.topleft = (580 - 120, 10) #definindo posicao onde será escrito
+        screen.blit(score_font, score_rect) # printando na tela(desenhando) o score.
+    
+    if score >= 5:
+        score_font = font.render('Fase 2,Score: %s' % (score), True, (255, 255, 255))  #definindo oque será escrito e sua cor,no caso a cor branca
+        score_rect = score_font.get_rect() 
+        score_rect.topleft = (580 - 120, 10) #definindo posicao onde será escrito
+        screen.blit(score_font, score_rect) # printando na tela(desenhando) o score.
+
     for pos in snake:    
             screen.blit(snake_skin,pos)  #desenhando na tela a cobra nas posicoes.
     pygame.display.update()  # se não eu vou atualizando o meu display
